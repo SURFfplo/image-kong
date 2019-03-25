@@ -1,2 +1,2 @@
-# image-kong-aai
-This repository contains the intfomatione to create  an new kong image with an OIDC plugin installed and passrod file awareness
+# image-kong
+This repository contains the information to create an new kong image with an OIDC plugin installed and password file awareness so docker secrets can be used.
