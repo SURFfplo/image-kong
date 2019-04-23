@@ -1,15 +1,14 @@
 FROM alpine:3.6
 LABEL maintainer="Kong Core Team <team-core@konghq.com>"
 
-ENV KONG_VERSION 1.1.0rc1
-ENV KONG_SHA256 72abd186181b5ebb263c4e12db5d89cac529e2b5ca858015d44a34d560755b35
-ENV KONG_CUSTOM_PLUGINS=oidc
+ENV KONG_VERSION 1.1.1
+ENV KONG_SHA256 3f07c30c6902ec0dd17e9777f5f479076c65c634b677402072414ca9d31dc810
 
 RUN adduser -Su 1337 kong \
 	&& mkdir -p "/usr/local/kong" \
-	&& apk add --no-cache --virtual .build-deps wget gcc git zip tar ca-certificates \
-	&& apk add --no-cache libgcc openssl pcre perl tzdata curl libcap su-exec \
-	&& wget -O kong.tar.gz "https://bintray.com/kong/kong-community-edition-alpine-tar/download_file?file_path=kong-community-edition-$KONG_VERSION.apk.tar.gz" \
+	&& apk add --no-cache --virtual .build-deps wget tar ca-certificates \
+	&& apk add --no-cache bash libgcc openssl pcre perl tzdata curl libcap su-exec \
+	&& wget -O kong.tar.gz "https://bintray.com/kong/kong-alpine-tar/download_file?file_path=kong-$KONG_VERSION.apk.tar.gz" \
 	&& echo "$KONG_SHA256 *kong.tar.gz" | sha256sum -c - \
 	&& tar -xzf kong.tar.gz -C /tmp \
 	&& rm -f kong.tar.gz \
@@ -17,9 +16,10 @@ RUN adduser -Su 1337 kong \
 	&& rm -rf /tmp/usr \
 	&& cp -R /tmp/etc / \
 	&& rm -rf /tmp/etc \
+	&& apk del .build-deps \
         && luarocks install kong-oidc \
- 	&& touch /bla.txt \
-	&& apk del .build-deps
+	&& chown -R kong:0 /usr/local/kong \
+	&& chmod -R g=u /usr/local/kong
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 

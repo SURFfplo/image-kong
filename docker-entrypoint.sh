@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # usage: file_env VAR [DEFAULT]
@@ -23,6 +23,8 @@ file_env() {
 	export "$var"="$val"
 	unset "$fileVar"
 }
+
+file_env "KONG_PG_DB_PASSWORD"
 
 export KONG_NGINX_DAEMON=off
 
